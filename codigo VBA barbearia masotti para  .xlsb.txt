@@ -1,0 +1,1312 @@
+Private Sub alteraNome_Click()
+'-------------------------------------------alterar nome do cliente------------------------------
+
+On Error GoTo erro
+
+If editNome = "" Then
+
+Exit Sub
+Else
+
+Dim linha As Long
+Planilha2.Visible = xlSheetVisible
+Planilha2.Activate
+
+
+
+For linha = 2 To 100000
+
+If Planilha2.Cells(linha, 2).Value = buscaNome.Value Then
+
+Range("B" & linha).Value = Me.editNome.Value
+
+End If
+Next
+End If
+
+Planilha2.Visible = xlSheetVeryHidden
+
+'----------------------------------------- altera cliente caixa ----------------------------------------------
+
+Planilha3.Visible = xlSheetVisible
+Planilha3.Activate
+
+For linha = 2 To 100000
+If Planilha3.Cells(linha, 2).Value = buscaNome.Value Then
+
+Range("B" & linha).Value = Me.editNome.Value
+End If
+Next
+Planilha3.Visible = xlSheetVeryHidden
+
+'------------------------------------------ altera cliente vendas ----------------------------------------------
+
+Planilha4.Visible = xlSheetVisible
+Planilha4.Activate
+
+For linha = 2 To 100000
+If Planilha4.Cells(linha, 2).Value = buscaNome.Value Then
+
+Range("B" & linha).Value = Me.editNome.Value
+End If
+Next
+Planilha4.Visible = xlSheetVeryHidden
+
+'------------------------------------------ altera cliente backup vendas -----------------------------------------
+
+Planilha6.Visible = xlSheetVisible
+Planilha6.Activate
+
+For linha = 2 To 100000
+If Planilha6.Cells(linha, 2).Value = buscaNome.Value Then
+
+Range("B" & linha).Value = Me.editNome.Value
+End If
+Next
+Planilha6.Visible = xlSheetVeryHidden
+
+'------------------------------------------ altera cliente backup pagamento --------------------------------------
+
+Planilha9.Visible = xlSheetVisible
+Planilha9.Activate
+
+For linha = 2 To 100000
+If Planilha9.Cells(linha, 2).Value = buscaNome.Value Then
+
+Range("B" & linha).Value = Me.editNome.Value
+End If
+Next
+
+Planilha9.Visible = xlSheetVeryHidden
+
+MsgBox "CADASTRO DE CLIENTE ALTERADO COM SUCESSO !! ", vbInformation, "ATERAÇÃO DE CLIENTE"
+
+erro:
+buscaNome = ""
+editNome = ""
+editTelefone = ""
+End Sub
+
+Private Sub alteraTelefone_Click()
+
+'----------------------------------------- alterar contato do cliente ----------------------------------------
+
+Dim resposta As VbMsgBoxResult
+Dim valor As String
+Dim fila As Object
+Dim linha As Long
+
+Planilha2.Visible = xlSheetVisible
+
+valor = Me.buscaNome.Value
+plan = Planilha2.Name
+
+
+If editTelefone = "" Then
+Exit Sub
+
+Else
+
+
+Set fila = Worksheets(plan).Range("B:B").Find(valor, lookat:=xlWhole)
+
+linha = fila.Row
+
+Range("C" & linha).Value = Me.editTelefone.Value
+
+
+MsgBox "CONTATO ALTERADO COM SUCESSO !!", vbInformation, "ALTERAÇÃO DE CONTATO"
+
+End If
+
+Planilha2.Visible = xlSheetVeryHidden
+buscaNome = ""
+editNome = ""
+editTelefone = ""
+End Sub
+
+Private Sub buscaCliente_Change()
+Planilha6.Range("H1").Value = buscaCliente
+Planilha11.Range("H1").Value = buscaCliente
+Planilha12.Range("H1").Value = buscaCliente
+
+End Sub
+
+Private Sub buscaCliente_Enter()
+
+'---------------------------------------- carregar lista de cliente no fechamento ---------------------------------------
+
+buscaCliente.Clear
+buscaCliente.ColumnWidths = "0;250"
+linha = 2
+ Me.buscaCliente.ColumnCount = 2
+Planilha2.Visible = xlSheetVisible
+Dim ultimaLin As Long
+Dim linnh As Integer
+
+ultimaLin = Planilha2.Range("A10000").End(xlUp).Row
+
+For linnh = 2 To ultimaLin
+
+inicio.buscaCliente.AddItem Planilha2.Range("A" & linnh)
+inicio.buscaCliente.List(inicio.buscaCliente.ListCount - 1, 1) = Planilha2.Range("B" & linnh)
+
+Next
+Planilha2.Visible = xlSheetVeryHidden
+End Sub
+
+Private Sub buscarVenda_Click()
+
+'--------------------------------------- busca venda por cliente ----------------------------------------------------
+
+
+Planilha5.Visible = xlSheetVisible
+
+Planilha5.Select
+
+Planilha5.Range("A2").Select
+
+With Planilha5.Range("B:B")
+
+Set c = .Find(listaCliente.Value, LookIn:=xlValues, lookat:=xlWhole)
+If listaCliente = "" Then
+MsgBox "SELECIONE O CLIENTE!!", vbExclamation, "VALORES PENDENTES"
+Else
+c.Activate
+ActiveCell.Offset(0, 3).Select
+valorCompra.Value = ActiveCell.Value
+End If
+Planilha5.Visible = xlSheetVeryHidden
+End With
+
+
+
+End Sub
+
+
+Private Sub cadProdutos_Click()
+
+'--------------------------------------- cadastrar produtos ------------------------------------------------
+
+Dim linha, id As Double
+Dim linhaList As Integer
+
+
+If descriProduto = "" Or valorProduto = "" Then
+MsgBox "DIGITE O NOME DO PRODUTO e VALOR !!!", vbExclamation, "NOVO CADASTRO"
+
+Exit Sub
+
+Else
+linhaList = Me.listProdutos.ListCount
+
+With Me.listProdutos
+
+    .AddItem (.ListCount + 1)
+    .List(linhaList, 1) = Me.descriProduto.Text
+    .List(linhaList, 2) = Format(valorProduto, "currency")
+    .List(linhaList, 3) = Format(Date, "dd/mm/yyyy")
+
+
+    linhaList = linhaList + 1
+
+  End With
+  
+
+  Planilha1.Visible = xlSheetVisible
+Planilha1.Activate
+
+
+Range("a10000").Select
+Selection.End(xlUp).Select
+ActiveCell.Offset(1, 1).Select
+
+linha = WorksheetFunction.CountA(Planilha1.Range("A:A")) + 1
+id = WorksheetFunction.Max(Planilha1.Range("A:A")) + 1
+
+Planilha1.Cells(linha, 1).Value = id
+
+
+ActiveCell.Value = descriProduto.Text
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = valorProduto.Text
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell = Format(Date, "dd/mm/yyyy")
+
+MsgBox "CADASTRO EFETUADO COM SUCESSO !!", vbInformation, "NOVO CASDASTRO"
+End If
+Planilha1.Visible = xlSheetVeryHidden
+descriProduto = ""
+valorProduto = ""
+End Sub
+
+Private Sub fechar_Click()
+ThisWorkbook.Save
+ThisWorkbook.Save
+
+Dim nomePlan As String
+nomePlan = ThisWorkbook.Name
+
+
+
+Dim qtd As Integer
+qtd = Workbooks.Count
+
+If qtd > 1 Then
+
+Windows(nomePlan).Close
+Else
+
+Application.Quit
+End If
+
+Application.Quit
+
+End Sub
+
+Private Sub fimPGTO_Change()
+Planilha12.Range("J1").Value = CDate(fimPGTO)
+End Sub
+
+Private Sub fimPGTO_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+fimPGTO = GetCalendario(fimPGTO)
+End Sub
+
+Private Sub formPgto_Enter()
+formPgto.Clear
+formPgto.ColumnWidths = "70"
+linha = 2
+ Me.formPgto.ColumnCount = 1
+Planilha8.Visible = xlSheetVisible
+Dim ultimaLin As Long
+Dim linnh As Integer
+
+ultimaLin = Planilha8.Range("A10000").End(xlUp).Row
+
+For linnh = 2 To ultimaLin
+
+inicio.formPgto.AddItem Planilha8.Range("A" & linnh)
+
+Next
+Planilha8.Visible = xlSheetVeryHidden
+End Sub
+
+Private Sub inicioPGTO_Change()
+Planilha12.Range("I1").Value = CDate(inicioPGTO)
+End Sub
+
+Private Sub inicioPGTO_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+inicioPGTO = GetCalendario(inicioPGTO)
+End Sub
+Private Sub printDataCliente_Click()
+
+'------------------------------------------- imprimir relatorio do cliente por data -----------------------------------
+
+Dim linha As Integer, lin As Integer
+Planilha11.Range("A2:E10000").ClearContents
+
+ Planilha6.Visible = xlSheetVisible
+  Planilha11.Visible = xlSheetVisible
+ If buscaCliente = "" Then
+ MsgBox "SELECIONE O CLIENTE !!", vbExclamation, "RELATÓRIOS"
+  Exit Sub
+  End If
+With Planilha6
+
+lin = 2
+linha = 2
+ 
+ Do Until .Cells(linha, 1) = ""
+ 
+ If .Cells(linha, 5) >= Planilha11.Range("I1").Cells _
+ And .Cells(linha, 5) <= Planilha11.Range("J1").Cells _
+ And .Cells(linha, 2) = buscaCliente Then
+ 
+ Planilha11.Activate
+ Planilha11.Cells(lin, 1) = .Cells(linha, 1)
+ Planilha11.Cells(lin, 2) = .Cells(linha, 2)
+ Planilha11.Cells(lin, 3) = .Cells(linha, 3)
+ Planilha11.Cells(lin, 4) = .Cells(linha, 4)
+ Planilha11.Cells(lin, 5) = .Cells(linha, 5)
+ 
+ 
+ lin = lin + 1
+ End If
+ linha = linha + 1
+ Loop
+ End With
+ Me.Hide
+Planilha11.PrintPreview
+Me.Show
+Unload Me
+inicio.Show
+Planilha6.Visible = xlSheetVeryHidden
+Planilha11.Visible = xlSheetVeryHidden
+End Sub
+
+Private Sub datRelatorio_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+datRelatorio = GetCalendario(datRelatorio)
+End Sub
+
+
+Private Sub editTelefone_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+Me.editTelefone.MaxLength = 14
+
+Select Case KeyAscii
+Case 8
+Case 13: SendKeys "{TAB}"
+Case 48 To 57
+
+If editTelefone.SelStart = 0 Then editTelefone.SelText = "("
+If editTelefone.SelStart = 3 Then editTelefone.SelText = ")"
+If editTelefone.SelStart = 9 Then editTelefone.SelText = "-"
+Case Else: KeyAscii = 0
+End Select
+
+End Sub
+
+Private Sub excluirProdutos_Click()
+
+'------------------------------------------- excluir produtos ----------------------------------------------------
+
+Dim resposta As Integer
+Dim linha As Double, totalLinhas As Double, id As Double
+Dim X As Variant
+Dim plan As String
+
+
+resposta = MsgBox("VOCE DESEJA EXCLUIR ESSE PRODUTO ??", vbYesNo + vbQuestion, "EXCLUSÃO DE PRODUTO")
+
+If resposta = vbNo Then
+Exit Sub
+End If
+Planilha1.Visible = xlSheetVisible
+plan = Planilha1.Name
+linha = 0
+With listProdutos
+    totalLinhas = .ListCount - 1
+    If totalLinhas = 0 Then
+    Exit Sub
+    End If
+    
+    Do
+    
+    linha = linha + 1
+    
+    If .Selected(linha) = False Then
+    Exit Sub
+    End If
+    
+    If .Selected(linha) = True Then
+    id = .List(linha, 0)
+    With Worksheets(plan).Range("A:A")
+    
+    Set X = .Find(id, LookIn:=xlValues, lookat:=xlWhole)
+    
+    If Not X Is Nothing Then
+    
+    
+    
+    Planilha1.Rows(X.Row).Delete
+    listProdutos.RemoveItem (linha)
+    totalLinhas = totalLinhas - 1
+    linha = linha - 1
+    End If
+    End With
+    
+    End If
+    
+    Loop Until linha = totalLinhas
+    End With
+    Set X = Nothing
+
+    Planilha1.Visible = xlSheetVeryHidden
+    MsgBox "PRODUTO EXCLUIDO COM SUCESSO !!", vbInformation, "EXCLUSÃO"
+End Sub
+
+Private Sub excluirVendas_Click()
+
+'-------------------------------------------- excluir venda ---------------------------------------------
+
+Dim resposta As Integer
+Dim linha As Double, totalLinhas As Double, id As Double
+Dim X As Variant
+Dim plan As String
+Dim linhas As Double, totalLinha As Double, ids As Double
+Dim Y As Variant
+Dim planil As String
+
+resposta = MsgBox("voce deseja excluir essa VENDA ??", vbYesNo + vbQuestion, "ESCLUSÃO DE VENDA")
+
+If resposta = vbNo Then
+Exit Sub
+End If
+
+
+Planilha4.Visible = xlSheetVisible
+Planilha6.Visible = xlSheetVisible
+plan = Planilha4.Name
+linha = 0
+With listLancamento
+    totalLinhas = .ListCount - 1
+    If totalLinhas = 0 Then
+    Exit Sub
+    End If
+    
+    Do
+    
+    linha = linha + 1
+    If .Selected(linha) = False Then
+    Exit Sub
+    End If
+    If .Selected(linha) = True Then
+    id = .List(linha, 0)
+    With Worksheets(plan).Range("A:A")
+    
+    Set X = .Find(id, LookIn:=xlValues, lookat:=xlWhole)
+    If Not X Is Nothing Then
+    
+    Planilha6.Rows(X.Row).Delete
+    Planilha4.Rows(X.Row).Delete
+    listLancamento.RemoveItem (linha)
+    totalLinhas = totalLinhas - 1
+    linha = linha - 1
+    End If
+   End With
+   
+    End If
+    
+    Loop Until linha = totalLinhas
+    End With
+    Set X = Nothing
+     Planilha6.Visible = xlSheetVeryHidden
+     Planilha4.Visible = xlSheetVeryHidden
+     
+    MsgBox "VENDA EXCLUÍDA COM SUCESSO !!", vbInformation, "EXCLUSÃO DE VENDA"
+    
+    
+End Sub
+
+Private Sub fimRelatorio_Change()
+Planilha6.Range("J1").Value = CDate(fimRelatorio)
+Planilha11.Range("J1").Value = CDate(fimRelatorio)
+End Sub
+
+Private Sub fimRelatorio_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+fimRelatorio = GetCalendario(fimRelatorio)
+End Sub
+
+Private Sub inicioRelatorio_Change()
+Planilha6.Range("I1").Value = CDate(inicioRelatorio)
+Planilha11.Range("I1").Value = CDate(inicioRelatorio)
+End Sub
+
+Private Sub inicioRelatorio_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+inicioRelatorio = GetCalendario(inicioRelatorio)
+End Sub
+
+Private Sub listaCliente_Enter()
+
+'------------------------------------------- carregar lista de clientes ------------------------------------------------------'
+
+listaCliente.Clear
+listaCliente.ColumnWidths = "0;250"
+linha = 2
+ Me.listaCliente.ColumnCount = 2
+Planilha2.Visible = xlSheetVisible
+Dim ultimaLin As Long
+Dim linnh As Integer
+
+ultimaLin = Planilha2.Range("A10000").End(xlUp).Row
+
+For linnh = 2 To ultimaLin
+
+inicio.listaCliente.AddItem Planilha2.Range("A" & linnh)
+inicio.listaCliente.List(inicio.listaCliente.ListCount - 1, 1) = Planilha2.Range("B" & linnh)
+
+Next
+Planilha2.Visible = xlSheetVeryHidden
+
+End Sub
+
+Private Sub listaProduto_Enter()
+
+ '------------------------------------------- carregar lista de produtos ----------------------------------------------
+
+listaProduto.Clear
+listaProduto.ColumnWidths = "0;250"
+Dim ultima As Long
+Dim linha As Integer
+Planilha1.Visible = xlSheetVisible
+ultimaLinha = Planilha1.Range("A10000").End(xlUp).Row
+
+For linha = 2 To ultimaLinha
+
+inicio.listaProduto.AddItem Planilha1.Range("A" & linha)
+inicio.listaProduto.List(inicio.listaProduto.ListCount - 1, 1) = Planilha1.Range("B" & linha)
+Next
+Planilha1.Visible = xlSheetVeryHidden
+End Sub
+
+Private Sub MultiPage1_Change()
+
+'--------------------------------------------lista de clientes ------------------------------------------
+
+If MultiPage1.Value = 1 Then
+
+Planilha2.Visible = xlSheetVisible
+Planilha2.Select
+
+
+With Planilha2
+listClientes.Clear
+listClientes.ColumnWidths = "20;140;85;50"
+Dim ultimaLinha As Long
+Dim linha As Integer
+
+
+
+ultimaLinha = Planilha2.Range("A10000").End(xlUp).Row
+
+For linha = 1 To ultimaLinha
+
+inicio.listClientes.AddItem Planilha2.Range("A" & linha)
+inicio.listClientes.List(inicio.listClientes.ListCount - 1, 1) = Planilha2.Range("B" & linha)
+inicio.listClientes.List(inicio.listClientes.ListCount - 1, 2) = Planilha2.Range("C" & linha)
+inicio.listClientes.List(inicio.listClientes.ListCount - 1, 3) = Planilha2.Range("D" & linha)
+Next
+End With
+End If
+Planilha2.Visible = xlSheetVeryHidden
+
+'----------------------------------------- lista de produtos -----------------------------------------------------------
+
+
+If MultiPage1.Value = 2 Then
+Planilha1.Visible = xlSheetVisible
+Planilha1.Select
+
+
+With Planilha1
+listProdutos.Clear
+listProdutos.ColumnWidths = "20;195;50;50"
+Dim ultima As Long
+Dim li As Integer
+
+ultima = Planilha1.Range("A10000").End(xlUp).Row
+
+For li = 1 To ultima
+
+inicio.listProdutos.AddItem Planilha1.Range("A" & li)
+inicio.listProdutos.List(inicio.listProdutos.ListCount - 1, 1) = Planilha1.Range("B" & li)
+inicio.listProdutos.List(inicio.listProdutos.ListCount - 1, 2) = Format(Planilha1.Range("C" & li), "currency")
+inicio.listProdutos.List(inicio.listProdutos.ListCount - 1, 3) = Planilha1.Range("D" & li)
+Next
+
+End With
+End If
+Planilha1.Visible = xlSheetVeryHidden
+'----------------------------------------- lista de vendas ------------------------------------------------------------
+
+If MultiPage1.Value = 3 Then
+Planilha4.Visible = xlSheetVisible
+Planilha4.Select
+
+With Planilha4
+
+listLancamento.Clear
+listLancamento.ColumnWidths = "20;125;90;50"
+Dim ultimaL As Long
+Dim l As Integer
+
+ultimaL = Planilha4.Range("A10000").End(xlUp).Row
+
+For l = 1 To ultimaL
+
+inicio.listLancamento.AddItem Planilha4.Range("A" & l)
+inicio.listLancamento.List(inicio.listLancamento.ListCount - 1, 1) = Planilha4.Range("B" & l)
+inicio.listLancamento.List(inicio.listLancamento.ListCount - 1, 2) = Planilha4.Range("C" & l)
+inicio.listLancamento.List(inicio.listLancamento.ListCount - 1, 3) = Format(Planilha4.Range("D" & l), "currency")
+inicio.listLancamento.List(inicio.listLancamento.ListCount - 1, 4) = Planilha4.Range("E" & l)
+Next
+End With
+End If
+Planilha4.Visible = xlSheetVeryHidden
+'---------------------------------------- relatorio de vendas ------------------------------------------------
+
+If MultiPage1.Value = 4 Then
+Planilha6.Visible = xlSheetVisible
+Planilha6.Select
+
+With Planilha6
+
+listaVendas.Clear
+listaVendas.ColumnWidths = "20;140;90;40"
+Dim ulti As Long
+Dim lin As Integer
+
+ulti = Planilha6.Range("A10000").End(xlUp).Row
+
+For lin = 1 To ulti
+
+inicio.listaVendas.AddItem Planilha6.Range("A" & lin)
+inicio.listaVendas.List(inicio.listaVendas.ListCount - 1, 1) = Planilha6.Range("B" & lin)
+inicio.listaVendas.List(inicio.listaVendas.ListCount - 1, 2) = Planilha6.Range("C" & lin)
+inicio.listaVendas.List(inicio.listaVendas.ListCount - 1, 3) = Format(Planilha6.Range("D" & lin), "currency")
+inicio.listaVendas.List(inicio.listaVendas.ListCount - 1, 4) = Planilha6.Range("E" & lin)
+Next
+
+End With
+End If
+Planilha6.Visible = xlSheetVeryHidden
+'-------------------------------------- relatorio de pagamentos ---------------------------------------------
+
+If MultiPage1.Value = 5 Then
+Planilha9.Visible = xlSheetVisible
+Planilha9.Select
+
+With Planilha9
+
+listaPagamento.Clear
+listaPagamento.ColumnWidths = "20;90;50;50;50;80"
+Dim ultimaLin As Long
+Dim linhas As Integer
+
+ultimaLin = Planilha9.Range("A100000").End(xlUp).Row
+
+For linhas = 1 To ultimaLin
+
+
+inicio.listaPagamento.AddItem Planilha9.Range("A" & linhas)
+inicio.listaPagamento.List(inicio.listaPagamento.ListCount - 1, 1) = Planilha9.Range("B" & linhas)
+inicio.listaPagamento.List(inicio.listaPagamento.ListCount - 1, 2) = Format(Planilha9.Range("C" & linhas), "currency")
+inicio.listaPagamento.List(inicio.listaPagamento.ListCount - 1, 3) = Format(Planilha9.Range("D" & linhas), "currency")
+inicio.listaPagamento.List(inicio.listaPagamento.ListCount - 1, 4) = Format(Planilha9.Range("E" & linhas), "currency")
+inicio.listaPagamento.List(inicio.listaPagamento.ListCount - 1, 5) = Planilha9.Range("F" & linhas)
+inicio.listaPagamento.List(inicio.listaPagamento.ListCount - 1, 6) = Format(Planilha9.Range("G" & linhas), "dd/mm/yyyy")
+
+Next
+
+End With
+End If
+Planilha9.Visible = xlSheetVeryHidden
+End Sub
+
+Private Sub pesquisar_Click()
+'--------------------------------------- pesquisar cliente para edição -----------------------------------
+
+If buscaNome = "" Then
+MsgBox "DIGITE O NOME DO CLIENTE !!!", vbExclamation, "PESQUISAR"
+Exit Sub
+End If
+
+Planilha2.Visible = xlSheetVisible
+Planilha2.Activate
+
+Dim plan As String
+
+
+plan = Planilha2.Name
+
+
+Dim resp
+
+resp = buscaNome.Value
+
+Dim c
+
+With Worksheets(plan).Range("B:B")
+
+Set c = .Find(resp, LookIn:=xlValues, lookat:=xlWhole)
+
+If Not c Is Nothing Then
+
+
+c.Activate
+
+editNome.Value = c.Offset(0, 0).Value
+editTelefone.Value = c.Offset(0, 1).Value
+
+
+
+Else
+MsgBox " CLIENTE NÃO ENCONTRADO", vbQuestion, "PESQUISAR"
+
+End If
+
+End With
+Exit Sub
+Planilha2.Visible = xlSheetVeryHidden
+End Sub
+
+Private Sub printFechamento_Click()
+
+'--------------------------------------------- relatorio de fechamento por data -----------------------------------
+
+If datRelatorio <> "" Then
+Me.Hide
+Planilha10.Visible = xlSheetVisible
+Planilha10.PrintPreview
+Worksheets("fechamentoCaixa").Select
+Me.Show
+End If
+Planilha10.Visible = xlSheetVeryHidden
+End Sub
+
+Private Sub efetuaPagamento_Click()
+
+'-------------------------------------------------- efetuar pagamento -------------------------------------------
+
+Dim linha, id As Double
+
+Planilha3.Visible = xlSheetVisible
+
+With Planilha3
+
+If listaCliente = "" Or valorPago = "" Or formPgto = "" Then
+
+MsgBox "FALTA SELECIONAR o CLIENTE  ou VALOR PAGO   ou a FORMA DE PAGAMENTO !!", vbExclamation, "VENDAS"
+Exit Sub
+
+
+Else
+linha = WorksheetFunction.CountA(Planilha3.Range("A:A")) + 1
+id = WorksheetFunction.Max(Planilha3.Range("A:A")) + 1
+
+Planilha3.Cells(linha, 1).Value = id
+
+Sheets("caixa").Activate
+
+Range("a10000").Select
+Selection.End(xlUp).Select
+ActiveCell.Offset(0, 0).Select
+
+
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("H1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("I1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("J1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("K1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("L1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("M1")
+
+MsgBox "PAGAMENTO EFETUADO COM SUCESSO !!", vbInformation, "PAGAMENTOS"
+Planilha3.Visible = xlSheetVeryHidden
+
+'------------------------------------------------ BACKUP pagamentos ----------------------------------------------------------
+
+
+Planilha9.Visible = xlSheetVisible
+
+linha = WorksheetFunction.CountA(Planilha9.Range("A:A")) + 1
+id = WorksheetFunction.Max(Planilha9.Range("A:A")) + 1
+
+Planilha9.Cells(linha, 1).Value = id
+
+Sheets("BKPpagamento").Activate
+
+Range("a10000").Select
+Selection.End(xlUp).Select
+ActiveCell.Offset(0, 0).Select
+
+
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("H1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("I1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("J1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("K1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("L1")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("M1")
+
+
+Dim linhas As Long
+Dim total As Double, diferenca As Double, l As Double
+
+diferenca = troco >= 0
+
+
+For linhas = .Cells(.Rows.Count, "B").End(xlUp).Row To 2 Step -1
+If .Cells(linhas, "B") = listaCliente And diferenca = True Then
+.Rows(linhas).Delete
+
+
+With Planilha4
+For l = .Cells(.Rows.Count, "B").End(xlUp).Row To 2 Step -1
+If .Cells(l, "B") = listaCliente Then
+.Rows(l).Delete
+End If
+Next l
+End With
+
+End If
+Next linhas
+Planilha9.Visible = xlSheetVeryHidden
+
+
+End If
+End With
+listaCliente = ""
+valorPago = ""
+formPgto = ""
+valorCompra = ""
+troco = ""
+
+End Sub
+
+Private Sub formPgto_Change()
+
+Planilha3.Range("L1").Value = formPgto.Value
+Planilha9.Range("L1").Value = formPgto.Value
+
+End Sub
+
+Private Sub lancarVenda_Click()
+
+'-------------------------------------------- lançamento de vendas -----------------------------------------------
+
+Dim linha, id As Double
+
+Planilha4.Visible = xlSheetVisible
+With Planilha4
+If listaCliente = "" Or listaProduto = "" Then
+
+MsgBox "SELECIONE O CLIENTE e o PRODUTO !!", vbExclamation, "VENDAS"
+Exit Sub
+
+Else
+linha = WorksheetFunction.CountA(Planilha4.Range("A:A")) + 1
+id = WorksheetFunction.Max(Planilha4.Range("A:A")) + 1
+
+Planilha4.Cells(linha, 1).Value = id
+Sheets("lancamentos").Activate
+
+Range("a10000").Select
+Selection.End(xlUp).Select
+ActiveCell.Offset(0, 0).Select
+
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("F1").Value
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("G1").Value
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("H1").Value
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("K1").Value
+
+MsgBox "LANÇAMENTO EFETUADO COM SUCESSO !!", vbInformation, "VENDAS"
+
+Planilha4.Visible = xlSheetVeryHidden
+
+'------------------------------------  BACKUP lançamentos ----------------------------------------'
+
+Planilha6.Visible = xlSheetVisible
+linha = WorksheetFunction.CountA(Planilha6.Range("A:A")) + 1
+id = WorksheetFunction.Max(Planilha6.Range("A:A")) + 1
+
+
+
+Planilha6.Cells(linha, 1).Value = id
+Sheets("BKPlancamento").Activate
+
+Range("A10000").Select
+Selection.End(xlUp).Select
+ActiveCell.Offset(0, 0).Select
+
+
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("F1").Value
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("G1").Value
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("H1").Value
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = .Range("K1").Value
+
+
+End If
+End With
+Planilha6.Visible = xlSheetVeryHidden
+listaCliente = ""
+listaProduto = ""
+valorPago = ""
+formPgto = ""
+valorCompra = ""
+troco = ""
+
+End Sub
+
+Private Sub listaCliente_Change()
+
+Planilha3.Range("H1").Value = listaCliente
+Planilha4.Range("f1").Value = listaCliente
+Planilha6.Range("F1").Value = listaCliente
+Planilha9.Range("H1").Value = listaCliente
+
+End Sub
+
+Private Sub listaProduto_Change()
+
+Planilha4.Range("g1").Value = listaProduto
+Planilha6.Range("G1").Value = listaProduto
+
+End Sub
+
+Private Sub cadaCliente_Click()
+
+'----------------------------------------- cadastrar cliente ---------------------------------------------------
+
+Dim linha, id As Double
+Dim linhaList As Integer
+
+
+If NomeCliente = "" Then
+MsgBox "DIGITE O NOME DO CLIENTE", vbExclamation, "CADASTRO"
+
+Exit Sub
+
+Else
+Planilha2.Visible = xlSheetVisible
+Dim nome As String
+nome = WorksheetFunction.CountIf(Planilha2.Range("B:B"), NomeCliente.Text)
+If nome > 0 Then
+MsgBox "CLIENTE JÁ EXISTE !!", vbCritical, "NOVO CADASTRO"
+Exit Sub
+End If
+
+linhaList = Me.listClientes.ListCount
+
+With Me.listClientes
+    .AddItem (.ListCount + 1)
+    .List(linhaList, 1) = Me.NomeCliente.Text
+    .List(linhaList, 2) = Format(telefone, "(00)00000-0000")
+    .List(linhaList, 3) = Format(Date, "dd/mm/yyyy")
+
+
+    linhaList = linhaList + 1
+
+  End With
+
+Sheets("clientes").Activate
+
+Range("a10000").Select
+Selection.End(xlUp).Select
+ActiveCell.Offset(1, 0).Select
+
+linha = WorksheetFunction.CountA(Planilha2.Range("A:A")) + 1
+id = WorksheetFunction.Max(Planilha2.Range("A:A")) + 1
+
+Planilha2.Cells(linha, 1).Value = id
+
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = NomeCliente.Text
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell.Value = Format(telefone, "(00)00000-0000")
+
+ActiveCell.Offset(0, 1).Select
+ActiveCell = Format(Date, "dd/mm/yyyy")
+
+MsgBox "CADASTRO EFETUADO COM SUCESSO !!", vbInformation, "NOVO CADASTRO"
+End If
+Planilha2.Visible = xlSheetVeryHidden
+NomeCliente = ""
+telefone = ""
+End Sub
+
+
+'---------------------------------------- carregar lista de cliente ----------------------------------------------
+
+
+Private Sub listClientes_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+listClientes.Clear
+listClientes.ColumnWidths = "20;100;90;50"
+Dim ult As Long
+Dim li As Integer
+
+Planilha2.Visible = xlSheetVisible
+
+ult = Planilha2.Range("A10000").End(xlUp).Row
+
+For li = 1 To ult
+
+clientes.listClientes.AddItem Planilha2.Range("A" & li)
+clientes.listClientes.List(clientes.listClientes.ListCount - 1, 1) = Planilha2.Range("B" & li)
+clientes.listClientes.List(clientes.listClientes.ListCount - 1, 2) = Planilha2.Range("C" & li)
+clientes.listClientes.List(clientes.listClientes.ListCount - 1, 3) = Planilha2.Range("D" & li)
+Next
+Planilha2.Visible = xlSheetVeryHidden
+End Sub
+
+Private Sub datRelatorio_Change()
+Planilha10.Range("E11").Value = CDate(datRelatorio)
+End Sub
+
+Private Sub printPgtoCliente_Click()
+
+'--------------------------------- imprimir relatorio pagamento do cliente por data -----------------------------------
+
+Dim linha As Integer, lin As Integer
+Planilha12.Range("A2:G10000").ClearContents
+
+ Planilha9.Visible = xlSheetVisible
+  Planilha12.Visible = xlSheetVisible
+  
+  If buscaCliente = "" Then
+  MsgBox "SELECIONE O CLIENTE !!", vbExclamation, "RELATÓRIOS"
+  Exit Sub
+  End If
+
+With Planilha9
+
+lin = 2
+linha = 2
+ 
+ Do Until .Cells(linha, 1) = ""
+ 
+ If .Cells(linha, 7) >= Planilha12.Range("I1").Cells _
+ And .Cells(linha, 7) <= Planilha12.Range("J1").Cells _
+ And .Cells(linha, 2) = buscaCliente Then
+ 
+ Planilha12.Activate
+ Planilha12.Cells(lin, 1) = .Cells(linha, 1)
+ Planilha12.Cells(lin, 2) = .Cells(linha, 2)
+ Planilha12.Cells(lin, 3) = .Cells(linha, 3)
+ Planilha12.Cells(lin, 4) = .Cells(linha, 4)
+ Planilha12.Cells(lin, 5) = .Cells(linha, 5)
+ Planilha12.Cells(lin, 6) = .Cells(linha, 6)
+ Planilha12.Cells(lin, 7) = .Cells(linha, 7)
+ 
+ lin = lin + 1
+ End If
+ linha = linha + 1
+ Loop
+ End With
+ Me.Hide
+Planilha12.PrintPreview
+Me.Show
+Unload Me
+inicio.Show
+ Planilha9.Visible = xlSheetVeryHidden
+ Planilha12.Visible = xlSheetVeryHidden
+
+End Sub
+
+Private Sub relatorioCompras_Click()
+
+'-------------------------------------------relatorio de venda por cliente -------------------------------------------
+
+
+Planilha11.Range("A2:E10000").ClearContents
+Dim ultimaLinha As Long
+Dim linhaAtual As Long
+Dim linha As Integer
+Dim W As Worksheet
+
+If buscaCliente = "" Then
+
+MsgBox "SELECIONE O CLIENTE", vbExclamation, "RELATÓRIOS"
+Exit Sub
+End If
+
+Set W = Worksheets("BKPlancamento")
+
+Planilha6.Activate
+Planilha6.Visible = xlSheetVisible
+
+ultimaLinha = W.UsedRange.Rows.Count
+
+linha = 2
+
+With W
+For linhaAtual = 2 To ultimaLinha
+
+If Cells(linhaAtual, "B").Value = buscaCliente Then
+
+Sheets("relatorioVendaCliente").Cells(linha, 1).Value = .Cells(linhaAtual, 1).Value
+Sheets("relatorioVendaCliente").Cells(linha, 2).Value = .Cells(linhaAtual, 2).Value
+Sheets("relatorioVendaCliente").Cells(linha, 3).Value = .Cells(linhaAtual, 3).Value
+Sheets("relatorioVendaCliente").Cells(linha, 4).Value = .Cells(linhaAtual, 4).Value
+Sheets("relatorioVendaCliente").Cells(linha, 5).Value = .Cells(linhaAtual, 5).Value
+
+
+linha = linha + 1
+
+End If
+
+Next linhaAtual
+Planilha6.Visible = xlSheetVeryHidden
+
+End With
+
+Me.Hide
+Planilha11.Visible = xlSheetVisible
+Planilha11.PrintPreview
+Me.Show
+Planilha11.Visible = xlSheetVeryHidden
+Unload Me
+inicio.Show
+End Sub
+
+Private Sub relatorioPagamentos_Click()
+
+'-------------------------------------------relatorio de pagamento por cliente -------------------------------------------
+
+
+Planilha12.Range("A2:G100").ClearContents
+Dim ultimaLinha As Long
+Dim linhaAtual As Long
+Dim linha As Integer
+Dim W As Worksheet
+
+If buscaCliente = "" Then
+
+MsgBox "SELECIONE O CLIENTE", vbExclamation, "RELATÓRIOS"
+Exit Sub
+End If
+
+Set W = Worksheets("BKPpagamento")
+Planilha9.Activate
+Planilha9.Visible = xlSheetVisible
+ultimaLinha = W.UsedRange.Rows.Count
+
+linha = 2
+
+With W
+For linhaAtual = 2 To ultimaLinha
+
+
+
+If Cells(linhaAtual, "B").Value = buscaCliente Then
+
+Sheets("relatorioPagamentoCliente").Cells(linha, 1).Value = .Cells(linhaAtual, 1).Value
+Sheets("relatorioPagamentoCliente").Cells(linha, 2).Value = .Cells(linhaAtual, 2).Value
+Sheets("relatorioPagamentoCliente").Cells(linha, 3).Value = .Cells(linhaAtual, 3).Value
+Sheets("relatorioPagamentoCliente").Cells(linha, 4).Value = .Cells(linhaAtual, 4).Value
+Sheets("relatorioPagamentoCliente").Cells(linha, 5).Value = .Cells(linhaAtual, 5).Value
+Sheets("relatorioPagamentoCliente").Cells(linha, 6).Value = .Cells(linhaAtual, 6).Value
+Sheets("relatorioPagamentoCliente").Cells(linha, 7).Value = .Cells(linhaAtual, 7).Value
+
+linha = linha + 1
+End If
+
+Next linhaAtual
+Planilha9.Visible = xlSheetVeryHidden
+End With
+Me.Hide
+Planilha12.Visible = xlSheetVisible
+Planilha12.PrintPreview
+Planilha12.Visible = xlSheetVeryHidden
+Unload Me
+inicio.Show
+End Sub
+
+Private Sub telefone_KeyPress(ByVal KeyAscii As MSForms.ReturnInteger)
+
+Me.telefone.MaxLength = 14
+
+Select Case KeyAscii
+Case 8
+Case 13: SendKeys "{TAB}"
+Case 48 To 57
+
+If telefone.SelStart = 0 Then telefone.SelText = "("
+If telefone.SelStart = 3 Then telefone.SelText = ")"
+If telefone.SelStart = 9 Then telefone.SelText = "-"
+Case Else: KeyAscii = 0
+End Select
+
+
+End Sub
+
+Private Sub troco_Change()
+
+Planilha3.Range("K1").Value = troco.Value
+Planilha9.Range("K1").Value = troco.Value
+
+End Sub
+
+
+Private Sub UserForm_Activate()
+With inicio
+
+    .Width = Application.Width
+    .Height = Application.Height
+    .Left = Application.Left
+    .Top = Application.Top
+End With
+End Sub
+
+Private Sub valorCompra_Change()
+Call soma
+Planilha3.Range("I1").Value = valorCompra.Value
+Planilha9.Range("I1").Value = valorCompra.Value
+
+End Sub
+
+Private Sub valorPago_Change()
+Call soma
+Planilha3.Range("J1").Value = valorPago.Value
+Planilha9.Range("J1").Value = valorPago.Value
+
+End Sub
+Sub soma()
+Dim n1, n2 As Double
+
+If valorPago <> "" Then
+n1 = valorPago
+Else
+n1 = "0"
+End If
+
+If valorCompra <> "" Then
+n2 = valorCompra
+Else
+n2 = "0"
+End If
+
+troco = CDbl(n1) - CDbl(n2)
+troco = troco
+End Sub
+Private Sub valorCompra_Exit(ByVal Cancel As MSForms.ReturnBoolean)
+valorCompra.Value = valorCompra
+End Sub
+Private Sub valorPago_Exit(ByVal Cancel As MSForms.ReturnBoolean)
+
+valorPago.Value = valorPago
+End Sub
+Private Sub troco_Exit(ByVal Cancel As MSForms.ReturnBoolean)
+troco.Value = valorCompra.Value - valorPago.Value
+End Sub
